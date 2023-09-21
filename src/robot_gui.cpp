@@ -1,10 +1,12 @@
 #include "robot_gui/robot_gui.h"
 
-RobotGUI::RobotGUI() : nh_(), frame_(800, 450, CV_8UC3), twist_msg() {
+RobotGUI::RobotGUI() : nh_(), frame_(800, 600, CV_8UC3), twist_msg() {
   robot_info_sub_ =
       nh_.subscribe("robot_info", 10, &RobotGUI::robotInfoCallback, this);
   odom_sub_ = nh_.subscribe("odom", 10, &RobotGUI::odomCallback, this);
   twist_pub_ = nh_.advertise<geometry_msgs::Twist>("cmd_vel", 10);
+  distance_service_client_ =
+      nh_.serviceClient<std_srvs::Trigger>("get_distance");
   cvui::init("Robot GUI");
 }
 
@@ -80,6 +82,19 @@ void RobotGUI::run() {
 
     cvui::window(frame_, 200, 415, 80, 80, "Z");
     cvui::printf(frame_, 210, 440, "%.2f", position_z_);
+
+    cvui::text(frame_, 10, 525, "Distance travelled");
+    if (cvui::button(frame_, 10, 550, "CALL")) {
+      std_srvs::Trigger srv;
+      if (distance_service_client_.call(srv)) {
+        distance_service_response_ = srv.response.message;
+      } else {
+        distance_service_response_ = "Service call failed.";
+      }
+    }
+
+    cvui::window(frame_, 90, 550, 200, 40, "Distance in meters");
+    cvui::printf(frame_, 100, 575, "%s", distance_service_response_.c_str());
 
     // Publish the twist message
     twist_pub_.publish(twist_msg);

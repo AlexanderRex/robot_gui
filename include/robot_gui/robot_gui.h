@@ -3,6 +3,7 @@
 #define CVUI_IMPLEMENTATION
 #include "robot_gui/cvui.h"
 #include "robotinfo_msgs/RobotInfo10Fields.h"
+#include "std_srvs/Trigger.h"
 #include <geometry_msgs/Twist.h>
 #include <nav_msgs/Odometry.h>
 #include <opencv2/opencv.hpp>
@@ -13,7 +14,7 @@ private:
   ros::NodeHandle nh_;
 
   ros::Subscriber robot_info_sub_;
-  ros::Subscriber odom_sub_; // Подписка на сообщения одометрии
+  ros::Subscriber odom_sub_;
 
   ros::Publisher twist_pub_;
 
@@ -23,7 +24,9 @@ private:
 
   std::string robot_info_;
 
-  // Величины для одометрии
+  ros::ServiceClient distance_service_client_;
+  std::string distance_service_response_;
+
   double linear_velocity_;
   double angular_velocity_;
   double position_x_;
@@ -32,8 +35,7 @@ private:
 
   void
   robotInfoCallback(const robotinfo_msgs::RobotInfo10Fields::ConstPtr &msg);
-  void odomCallback(const nav_msgs::Odometry::ConstPtr
-                        &msg); // Функция обратного вызова для одометрии
+  void odomCallback(const nav_msgs::Odometry::ConstPtr &msg);
 
 public:
   RobotGUI();

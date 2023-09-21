@@ -1,6 +1,6 @@
 #include "robot_gui/robot_gui.h"
 
-RobotGUI::RobotGUI() : nh_(), frame_(800, 440, CV_8UC3), twist_msg() {
+RobotGUI::RobotGUI() : nh_(), frame_(800, 280, CV_8UC3), twist_msg() {
   robot_info_sub_ =
       nh_.subscribe("robot_info", 10, &RobotGUI::robotInfoCallback, this);
   odom_sub_ = nh_.subscribe("odom", 10, &RobotGUI::odomCallback, this);
@@ -36,7 +36,7 @@ void RobotGUI::run() {
     frame_ = cv::Scalar(49, 52, 49);
 
     // Info window
-    cvui::window(frame_, 10, 10, 235, 230, "InfoArea");
+    cvui::window(frame_, 10, 10, 260, 230, "InfoArea");
 
     std::istringstream stream(robot_info_);
     std::string line;
@@ -66,13 +66,11 @@ void RobotGUI::run() {
     }
 
     // Velocity windows
-    cvui::window(frame_, 10, 360, 200, 100, "Linear Velocity");
-    cvui::printf(frame_, 20, 390, "Linear velocity: %.2f m/s",
-                 linear_velocity_);
+    cvui::window(frame_, 10, 360, 105, 100, "Linear Velocity");
+    cvui::printf(frame_, 20, 390, " %.2f m/s", linear_velocity_);
 
-    cvui::window(frame_, 230, 360, 200, 100, "Angular Velocity");
-    cvui::printf(frame_, 240, 390, "Angular velocity: %.2f rad/s",
-                 angular_velocity_);
+    cvui::window(frame_, 150, 360, 115, 100, "Angular Velocity");
+    cvui::printf(frame_, 160, 390, " %.2f rad/s", angular_velocity_);
 
     // Position windows
     cvui::text(frame_, 10, 475, "Estimated position based on odometry");
@@ -95,7 +93,7 @@ void RobotGUI::run() {
       }
     }
 
-    cvui::window(frame_, 90, 610, 200, 40, "Distance in meters");
+    cvui::window(frame_, 90, 610, 180, 40, "Distance in meters");
     cvui::printf(frame_, 100, 635, "%s", distance_service_response_.c_str());
 
     // Publish the twist message

@@ -16,7 +16,9 @@ void RobotGUI::robotInfoCallback(
     const robotinfo_msgs::RobotInfo10Fields::ConstPtr &msg) {
   robot_info_ = msg->data_field_01 + "\n" + msg->data_field_02 + "\n" +
                 msg->data_field_03 + "\n" + msg->data_field_04 + "\n" +
-                msg->data_field_05;
+                msg->data_field_05 + "\n" + msg->data_field_06 + "\n" +
+                msg->data_field_07 + "\n" + msg->data_field_08 + "\n" +
+                msg->data_field_09 + "\n" + msg->data_field_10;
 }
 
 void RobotGUI::odomCallback(const nav_msgs::Odometry::ConstPtr &msg) {
@@ -34,7 +36,7 @@ void RobotGUI::run() {
     frame_ = cv::Scalar(49, 52, 49);
 
     // Info window
-    cvui::window(frame_, 10, 10, 225, 150, "InfoArea");
+    cvui::window(frame_, 10, 10, 235, 230, "InfoArea");
 
     std::istringstream stream(robot_info_);
     std::string line;
@@ -45,46 +47,46 @@ void RobotGUI::run() {
     }
 
     // Teleop buttons
-    int buttonsY = 170;
-    if (cvui::button(frame_, 60, buttonsY, " Forward ")) {
+    int buttonsY = 250;
+    if (cvui::button(frame_, 90, buttonsY, " Forward ")) {
       twist_msg.linear.x += 0.1;
     }
-    if (cvui::button(frame_, 60, buttonsY + 30, "   Stop   ")) {
+    if (cvui::button(frame_, 90, buttonsY + 30, "   Stop   ")) {
       twist_msg.linear.x = 0;
       twist_msg.angular.z = 0;
     }
     if (cvui::button(frame_, 20, buttonsY + 30, " Left ")) {
       twist_msg.angular.z += 0.1;
     }
-    if (cvui::button(frame_, 130, buttonsY + 30, " Right ")) {
+    if (cvui::button(frame_, 190, buttonsY + 30, " Right ")) {
       twist_msg.angular.z -= 0.1;
     }
-    if (cvui::button(frame_, 60, buttonsY + 60, " Backward ")) {
+    if (cvui::button(frame_, 90, buttonsY + 60, " Backward ")) {
       twist_msg.linear.x -= 0.1;
     }
 
     // Velocity windows
-    cvui::window(frame_, 10, 280, 200, 100, "Linear Velocity");
-    cvui::printf(frame_, 20, 310, "Linear velocity: %.2f m/s",
+    cvui::window(frame_, 10, 360, 200, 100, "Linear Velocity");
+    cvui::printf(frame_, 20, 390, "Linear velocity: %.2f m/s",
                  linear_velocity_);
 
-    cvui::window(frame_, 230, 280, 200, 100, "Angular Velocity");
-    cvui::printf(frame_, 240, 310, "Angular velocity: %.2f rad/s",
+    cvui::window(frame_, 230, 360, 200, 100, "Angular Velocity");
+    cvui::printf(frame_, 240, 390, "Angular velocity: %.2f rad/s",
                  angular_velocity_);
 
     // Position windows
-    cvui::text(frame_, 10, 395, "Estimated position based on odometry");
-    cvui::window(frame_, 10, 415, 80, 80, "X");
-    cvui::printf(frame_, 20, 440, "%.2f", position_x_);
+    cvui::text(frame_, 10, 475, "Estimated position based on odometry");
+    cvui::window(frame_, 10, 495, 80, 80, "X");
+    cvui::printf(frame_, 20, 520, "%.2f", position_x_);
 
-    cvui::window(frame_, 100, 415, 80, 80, "Y");
-    cvui::printf(frame_, 110, 440, "%.2f", position_y_);
+    cvui::window(frame_, 100, 495, 80, 80, "Y");
+    cvui::printf(frame_, 110, 520, "%.2f", position_y_);
 
-    cvui::window(frame_, 200, 415, 80, 80, "Z");
-    cvui::printf(frame_, 210, 440, "%.2f", position_z_);
+    cvui::window(frame_, 200, 495, 80, 80, "Z");
+    cvui::printf(frame_, 210, 520, "%.2f", position_z_);
 
-    cvui::text(frame_, 10, 525, "Distance travelled");
-    if (cvui::button(frame_, 10, 550, "CALL")) {
+    cvui::text(frame_, 10, 585, "Distance travelled");
+    if (cvui::button(frame_, 10, 610, "CALL")) {
       std_srvs::Trigger srv;
       if (distance_service_client_.call(srv)) {
         distance_service_response_ = srv.response.message;
@@ -93,8 +95,8 @@ void RobotGUI::run() {
       }
     }
 
-    cvui::window(frame_, 90, 550, 200, 40, "Distance in meters");
-    cvui::printf(frame_, 100, 575, "%s", distance_service_response_.c_str());
+    cvui::window(frame_, 90, 610, 200, 40, "Distance in meters");
+    cvui::printf(frame_, 100, 635, "%s", distance_service_response_.c_str());
 
     // Publish the twist message
     twist_pub_.publish(twist_msg);

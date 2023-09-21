@@ -1,6 +1,6 @@
 #include "robot_gui/robot_gui.h"
 
-RobotGUI::RobotGUI() : nh_(), frame_(800, 600, CV_8UC3), twist_msg() {
+RobotGUI::RobotGUI() : nh_(), frame_(800, 440, CV_8UC3), twist_msg() {
   robot_info_sub_ =
       nh_.subscribe("robot_info", 10, &RobotGUI::robotInfoCallback, this);
   odom_sub_ = nh_.subscribe("odom", 10, &RobotGUI::odomCallback, this);
@@ -82,8 +82,8 @@ void RobotGUI::run() {
     cvui::window(frame_, 100, 495, 80, 80, "Y");
     cvui::printf(frame_, 110, 520, "%.2f", position_y_);
 
-    cvui::window(frame_, 200, 495, 80, 80, "Z");
-    cvui::printf(frame_, 210, 520, "%.2f", position_z_);
+    cvui::window(frame_, 190, 495, 80, 80, "Z");
+    cvui::printf(frame_, 200, 520, "%.2f", position_z_);
 
     cvui::text(frame_, 10, 585, "Distance travelled");
     if (cvui::button(frame_, 10, 610, "CALL")) {
